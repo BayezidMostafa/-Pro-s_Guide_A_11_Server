@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const port = process.env.PORT || 5000;
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 // Middleware
 app.use(cors());
@@ -21,12 +21,19 @@ const run = async () => {
         //     const services = await cursor.toArray()
         //     res.send(services);
         // })
-        app.get('/services', async(req, res) => {
+        app.get('/services', async (req, res) => {
             const size = Number(req.query.size);
             const query = {};
             const cursor = serviceCollection.find(query).limit(size);
             const services = await cursor.toArray();
             res.send(services);
+        })
+        app.get('/services/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log(id);
+            const query = {_id: ObjectId(id)}
+            const service = await serviceCollection.findOne(query);
+            res.send(service);
         })
     }
     finally { }
