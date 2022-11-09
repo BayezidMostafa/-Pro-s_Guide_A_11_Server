@@ -15,10 +15,17 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 const run = async () => {
     try {
         const serviceCollection = client.db('guiderDB1').collection('services');
+        // app.get('/services_lmt', async(req, res) => {
+        //     const query = {};
+        //     const cursor = serviceCollection.find(query).limit(3);
+        //     const services = await cursor.toArray()
+        //     res.send(services);
+        // })
         app.get('/services', async(req, res) => {
+            const size = Number(req.query.size);
             const query = {};
-            const cursor = serviceCollection.find(query);
-            const services = await cursor.toArray()
+            const cursor = serviceCollection.find(query).limit(size);
+            const services = await cursor.toArray();
             res.send(services);
         })
     }
