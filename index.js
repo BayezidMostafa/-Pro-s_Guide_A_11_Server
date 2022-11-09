@@ -5,8 +5,10 @@ const cors = require('cors');
 const port = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 // Middleware
+
 app.use(cors());
 app.use(express.json())
+
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.tikoekt.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 const run = async () => {
@@ -43,6 +45,17 @@ const run = async () => {
             const service = req.body;
             const result = await reviewCollection.insertOne(service);
             res.send(result);
+        })
+        app.get('/myReviews', async (req, res) => {
+            let query = {};
+            if (req.query.email) {
+                query = {
+                    email: req.query.email
+                }
+            }
+            const cursor = reviewCollection.find(query)
+            const output = await cursor.toArray()
+            res.send(output)
         })
     }
     finally { }
